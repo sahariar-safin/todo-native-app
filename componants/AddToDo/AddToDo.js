@@ -1,17 +1,26 @@
-import React, { useState } from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import DeviceInfo from 'react-native-device-info';
 
-const AddToDo = ({ toDo, setToDo }) => {
+const AddToDo = ({ deviceId, toDo, dependencies, setDependencies }) => {
     const [inputToDO, setInputToDO] = useState('')
 
     const handleAddToDo = () => {
         if (inputToDO.length > 0) {
             const todo = {
-                id: (Math.random() * 1000).toFixed(0),
-                name: inputToDO
+                userID: deviceId,
+                todoID: (Math.random() * 10000000).toFixed(0),
+                todoName: inputToDO
             }
-            const newToDo = [...toDo, todo];
-            setToDo(newToDo);
+
+            axios.post('http://192.168.43.250:8000/todo/addtodo', todo)
+                .then(function (response) {
+                    setDependencies(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             setInputToDO('');
         }
     }

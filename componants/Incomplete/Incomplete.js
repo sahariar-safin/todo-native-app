@@ -1,28 +1,55 @@
-import React from 'react'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
 import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
-const Incomplete = ({ toDo, item, setToDo }) => {
+const Incomplete = ({ toDo, deviceId, setToDo, dependencies, setDependencies }) => {
+    const [deletedTodo, setDeletedTodo] = useState(null)
+    useEffect(() => {
+        {
+            deviceId && (
+                axios.get("http://192.168.43.250:8000/todo/" + deviceId)
+                    .then(function (response) {
+                        const data = response.data;
+                        setToDo(data);
+                    })
+                    .catch(function (error) {
+                        // handle error
+                        console.log(error);
+                    })
+            )
+        }
+    }, [dependencies, deviceId])
 
     const handleDelete = (id) => {
-        const newToDo = toDo.filter(todo => todo.id !== id);
-        setToDo(newToDo);
+        console.log(id)
+        axios.post('http://192.168.43.250:8000/todo/deletetodo', { id })
+            .then(function (response) {
+                setDependencies(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
     return (
         <View>
             <Text style={styles.title}>To Do List</Text>
-            <FlatList
-                data={toDo}
-                renderItem={({ item }) =>
-                    <View style={styles.item}>
-                        <Text style={styles.itemTitle}>{item.name}</Text>
-                        <TouchableOpacity onPress={() => handleDelete(item.id)}>
-                            <View style={styles.deleteBtn}><Text style={styles.deleteBtnText}>Delete</Text></View>
-                        </TouchableOpacity>
-                    </View>
-                }
-                keyExtractor={item => item.id}
-            />
+            {
+                toDo.length > 0 && (
+                    <FlatList
+                        data={toDo}
+                        renderItem={({ item }) =>
+                            <View style={styles.item}>
+                                <Text style={styles.itemTitle}>{item.todoName}</Text>
+                                <TouchableOpacity onPress={() => handleDelete(item.todoID)}>
+                                    <View style={styles.deleteBtn}><Text style={styles.deleteBtnText}>Delete</Text></View>
+                                </TouchableOpacity>
+                            </View>
+                        }
+                        keyExtractor={item => item.todoID}
+                    />
+                )
+            }
         </View>
     )
 }

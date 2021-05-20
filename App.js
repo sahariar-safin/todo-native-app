@@ -3,24 +3,32 @@ import { FlatList, LogBox, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text
 import AddToDo from './componants/AddToDo/AddToDo'
 import Header from './componants/Header/Header'
 import Incomplete from './componants/Incomplete/Incomplete'
+import DeviceInfo from 'react-native-device-info';
+import axios from 'axios'
 
 const App = () => {
-  const [toDo, setToDo] = useState([])
+  const [toDo, setToDo] = useState([]);
+  const [deviceId, setDeviceId] = useState(null);
+  const [dependencies, setDependencies] = useState(null)
 
   useEffect(() => {
+    const DeviceID = DeviceInfo.getUniqueId();
+    setDeviceId(DeviceID);
+    setDependencies(deviceId);
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
   }, [])
+
 
   return (
     <SafeAreaView>
       <StatusBar />
-      <ScrollView>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic">
         <Header toDo={toDo} />
         <View style={styles.container}>
-          <AddToDo toDo={toDo} setToDo={setToDo} />
-          {
-            toDo.length > 0 && <Incomplete setToDo={setToDo} toDo={toDo} />
-          }
+          <AddToDo dependencies={dependencies} setDependencies={setDependencies} toDo={toDo} deviceId={deviceId} setToDo={setToDo} />
+          <Incomplete dependencies={dependencies} setDependencies={setDependencies} deviceId={deviceId} toDo={toDo} setToDo={setToDo} />
+
         </View>
       </ScrollView>
     </SafeAreaView>
