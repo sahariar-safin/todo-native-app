@@ -14,7 +14,7 @@ const AddToDo = ({ deviceId, toDo, dependencies, setDependencies }) => {
                 todoName: inputToDO
             }
 
-            axios.post('http://192.168.43.250:8000/todo/addtodo', todo)
+            axios.post('https://guarded-ravine-77675.herokuapp.com/todo/addtodo', todo)
                 .then(function (response) {
                     setDependencies(response);
                 })

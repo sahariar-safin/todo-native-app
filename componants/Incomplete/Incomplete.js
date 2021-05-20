@@ -7,7 +7,7 @@ const Incomplete = ({ toDo, deviceId, setToDo, dependencies, setDependencies }) 
     useEffect(() => {
         {
             deviceId && (
-                axios.get("http://192.168.43.250:8000/todo/" + deviceId)
+                axios.get("https://guarded-ravine-77675.herokuapp.com/todo/" + deviceId)
                     .then(function (response) {
                         const data = response.data;
                         setToDo(data);
@@ -22,7 +22,7 @@ const Incomplete = ({ toDo, deviceId, setToDo, dependencies, setDependencies }) 
 
     const handleDelete = (id) => {
         console.log(id)
-        axios.post('http://192.168.43.250:8000/todo/deletetodo', { id })
+        axios.post('https://guarded-ravine-77675.herokuapp.com/todo/deletetodo', { id })
             .then(function (response) {
                 setDependencies(response);
             })
